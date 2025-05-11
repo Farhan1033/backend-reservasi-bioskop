@@ -1,11 +1,12 @@
-import { getAllMovies, addMovies, editMovies, deleteMovies } from "../controllers/movieController.js";
-import express from 'express';
+import movieController from "../controllers/movieController.js";
+import express from "express";
 
-const router = express.Router();
+const route = express.Router();
 
-router.get('/movies', getAllMovies)
-router.post('/add-movies', addMovies)
-router.put('/edit-movies/:id', editMovies)
-router.delete('/delete-movies/:id', deleteMovies)
+route.post('/add-movies', movieController.addMovie)
+route.get('/', movieController.getAllMovie)
+route.get('/search', movieController.searchMovie)
+route.put('/update-movies', movieController.updateMovie)
+route.delete('/delete-movies', movieController.deleteMovie)
 
-export default router;
+export default route;

@@ -1,7 +1,6 @@
 import express, { json } from 'express'
 import helmet from 'helmet';
 import cors from 'cors'
-import rateLimit from 'express-rate-limit';
 import movieRoute from "./routers/movieRoute.js"
 import userRoute from './routers/userRoute.js'
 
@@ -22,7 +21,7 @@ app.use(express.urlencoded({ extended: true })); // Parse form-urlencoded
 // app.use(limiter);
 
 app.use('/api/users', userRoute)
-app.use('/api', movieRoute)
+app.use('/api/movies', movieRoute)
 
 app.listen(PORT, () => {
     console.log(`Example app listening on port ${PORT}`)
