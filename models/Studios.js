@@ -27,7 +27,9 @@ class Studios {
         );
     }
 
-    static getAllStudios(id) {
+    static deleteStudios(id) {
         return studioRepository.deleteStudio(id);
     }
 }
+
+export default Studios;
