@@ -4,31 +4,44 @@ import Movies from '../models/Movies.js'
 class movieController {
     static async addMovie(req, res) {
         try {
-            const { title, description, duration, poster_url, create_at } = req.body
+            const { title, description, duration, poster_url } = req.body;
 
-            const existingMovie = await Movies.findByTitle(title)
-            if (existingMovie) {
-                return res.status(400).json({ message: "Film sudah ada di list" })
+            if (!title || !description || !duration || !poster_url) {
+                return res.status(400).json({
+                    message: "Semua field (title, description, duration, poster_url) harus diisi"
+                });
+            }
+            const existingMovies = await Movies.findByTitle(title);
+            if (existingMovies && existingMovies.length > 0) {
+                return res.status(400).json({
+                    message: "Film dengan judul tersebut sudah ada"
+                });
             }
 
             const id = uuidv4();
+            const created_at = new Date();
 
-            const movieData = new Movies(id, title, description, duration, poster_url, create_at)
+            const movieData = new Movies(
+                id,
+                title,
+                description,
+                duration,
+                poster_url,
+                created_at
+            );
 
             await Movies.createMovies(movieData);
 
-            res.status(200).json({
+            res.status(201).json({
                 message: "Film berhasil ditambahkan",
-                movie: {
-                    title,
-                    description,
-                    duration,
-                    poster_url,
-                    create_at
-                }
-            })
+                movie: movieData
+            });
         } catch (error) {
-            res.status(500).json({ error: error.message })
+            console.error("Error in addMovie:", error);
+            res.status(500).json({
+                error: error.message,
+                details: "Terjadi kesalahan saat menambahkan film"
+            });
         }
     }
 
