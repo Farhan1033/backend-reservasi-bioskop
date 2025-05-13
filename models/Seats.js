@@ -47,6 +47,11 @@ class Seat {
     static delete(id) {
         return seatRepository.deleteSeat(id);
     }
+
+    static getById(id) {
+        return seatRepository.getSeatById(id);
+    }
+
 }
 
 export default Seat;

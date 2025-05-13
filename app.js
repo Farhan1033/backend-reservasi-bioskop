@@ -5,6 +5,8 @@ import movieRoute from "./routers/movieRoute.js"
 import userRoute from './routers/userRoute.js'
 import studioRoute from './routers/studioRoute.js'
 import seatRoute from './routers/seatRoute.js'
+import scheduleRoute from './routers/shceduleRoute.js'
+import reservationRoute from './routers/reservationRoute.js'
 
 
 const app = express();
@@ -19,6 +21,8 @@ app.use('/api/users', userRoute)
 app.use('/api/movies', movieRoute)
 app.use('/api/studios', studioRoute)
 app.use('/api/seats', seatRoute)
+app.use('/api/schedule', scheduleRoute)
+app.use('/api/reservation', reservationRoute)
 
 app.listen(PORT, () => {
     console.log(`Example app listening on port ${PORT}`)

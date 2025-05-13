@@ -21,6 +21,17 @@ export default class seatRepository {
         });
     }
 
+    static getSeatById(id) {
+        return new Promise((resolve, reject) => {
+            const sql = "SELECT * FROM seats WHERE id = ?";
+            db.query(sql, [id], (err, result) => {
+                if (err) return reject(err);
+                resolve(result[0]); // Mengembalikan satu record saja
+            });
+        });
+    }
+
+
     static getAvailableSeats(scheduleId) {
         return new Promise((resolve, reject) => {
             const sql = `
@@ -60,7 +71,7 @@ export default class seatRepository {
                 return reject(new Error('No seats data provided'));
             }
 
-            const values = seatsData.map(seat => 
+            const values = seatsData.map(seat =>
                 [seat.id, seat.studio_id, seat.seat_number, seat.row || 'A', seat.type || 'regular', seat.is_active || true]
             );
 
@@ -68,7 +79,7 @@ export default class seatRepository {
                 INSERT INTO seats (id, studio_id, seat_number, row, type, is_active)
                 VALUES ?
             `;
-            
+
             db.query(sql, [values], (err, result) => {
                 if (err) return reject(err);
                 resolve(result);
