@@ -10,7 +10,6 @@ import reservationRoute from './routers/reservationRoute.js'
 
 
 const app = express();
-const PORT = 3000;
 
 app.use(helmet());                     // Mengatur HTTP headers yang aman
 app.use(cors());                       // Mengizinkan akses dari frontend (atur asal jika perlu)
@@ -24,6 +23,4 @@ app.use('/api/seats', seatRoute)
 app.use('/api/schedule', scheduleRoute)
 app.use('/api/reservation', reservationRoute)
 
-app.listen(PORT, () => {
-    console.log(`Example app listening on port ${PORT}`)
-})
+app.listen(process.env.APP_PORT)
