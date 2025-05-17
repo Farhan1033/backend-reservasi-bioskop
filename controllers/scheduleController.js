@@ -20,10 +20,11 @@ class scheduleController {
                 return res.status(404).json({ message: "Film tidak ditemukan" });
             }
 
+            const showTimeWIB = new Date(`${show_time}:00+07:00`);
             // Cek konflik jadwal
             const hasConflict = await Schedule.checkAvailability(
                 studio_id, 
-                new Date(show_time), 
+                showTimeWIB, 
                 selectedMovie.duration
             );
 
@@ -34,7 +35,7 @@ class scheduleController {
             }
 
             const id = uuidv4();
-            const scheduleData = new Schedule(id, movie_id, studio_id, new Date(show_time));
+            const scheduleData = new Schedule(id, movie_id, studio_id, showTimeWIB);
 
             await Schedule.create(scheduleData);
 
