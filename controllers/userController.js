@@ -1,6 +1,8 @@
 import { v4 as uuidv4 } from 'uuid'
 import bcrypt from 'bcrypt'
 import User from '../models/User.js';
+import jwt from 'jsonwebtoken';
+import { secret, options } from '../config/jwtConfig.js';
 
 class userController {
     static async register(req, res) {
@@ -49,7 +51,18 @@ class userController {
                 return res.status(401).json({ error: "Password salah" });
             }
 
-            res.status(200).json({ message: 'Login berhasil' })
+            const payload = {
+                userId: user.Id,
+                email: user.email,
+                role: user.role
+            }
+
+            const token = jwt.sign(payload, secret, options);
+
+            res.status(200).json({
+                message: 'Login berhasil',
+                token
+            })
         } catch (error) {
             res.status(500).json({ error: error.message })
         }
