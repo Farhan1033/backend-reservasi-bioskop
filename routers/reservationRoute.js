@@ -1,12 +1,13 @@
 import express from 'express';
 import reservationController from '../controllers/reservationController.js';
+import userMiddleware from '../middlewares/userMiddleware.js';
 
 const router = express.Router();
 
 // Protected routes
-router.post('/', reservationController.createReservation);
-router.put('/status', reservationController.updateReservationStatus);
-router.patch('/:id/cancel', reservationController.cancelReservation);
+router.post('/', userMiddleware, reservationController.createReservation);
+router.put('/status', userMiddleware, reservationController.updateReservationStatus);
+router.patch('/:id/cancel', userMiddleware, reservationController.cancelReservation);
 router.get('/user/:userId', reservationController.getUserReservations);
 
 // Admin routes

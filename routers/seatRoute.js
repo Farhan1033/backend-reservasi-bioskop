@@ -1,5 +1,6 @@
 import express from 'express';
 import seatController from '../controllers/seatController.js';
+import userMiddleware from '../middlewares/userMiddleware.js';
 
 const router = express.Router();
 
@@ -11,7 +12,7 @@ router.delete('/delete-seat/:id', seatController.deleteSeat);
 router.patch('/deactivate/:id', seatController.deactivateSeat);
 
 // Public routes
-router.get('/studio/:studioId', seatController.getSeatsByStudio);
-router.get('/available/:scheduleId', seatController.getAvailableSeats);
+router.get('/studio/:studioId', userMiddleware, seatController.getSeatsByStudio);
+router.get('/available/:scheduleId', userMiddleware, seatController.getAvailableSeats);
 
 export default router;
