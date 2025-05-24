@@ -126,4 +126,14 @@ export default class seatRepository {
             });
         });
     }
+
+    static countByStudio(studioId) {
+        return new Promise((resolve, reject) => {
+            const sql = "SELECT COUNT(*) AS total FROM seats WHERE studio_id = ?";
+            db.query(sql, [studioId], (err, result) => {
+                if (err) return reject(err);
+                resolve(result[0].total);
+            });
+        });
+    }
 }

@@ -52,6 +52,10 @@ class Seat {
         return seatRepository.getSeatById(id);
     }
 
+    static countByStudio(studioId) {
+        return seatRepository.countByStudio(studioId);
+    }
+
 }
 
 export default Seat;

@@ -30,6 +30,10 @@ class Studios {
     static deleteStudios(id) {
         return studioRepository.deleteStudio(id);
     }
+
+    static findByPK(id) {
+        return studioRepository.findByPK(id);
+    }
 }
 
 export default Studios;

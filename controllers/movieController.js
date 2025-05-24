@@ -4,11 +4,11 @@ import Movies from '../models/Movies.js'
 class movieController {
     static async addMovie(req, res) {
         try {
-            const { title, description, duration, poster_url } = req.body;
+            const { title, description, duration, category, price, poster_url } = req.body;
 
-            if (!title || !description || !duration || !poster_url) {
+            if (!title || !description || !duration || !category || !price || !poster_url) {
                 return res.status(400).json({
-                    message: "Semua field (title, description, duration, poster_url) harus diisi"
+                    message: "Semua field harus diisi"
                 });
             }
             const existingMovies = await Movies.findByTitle(title);
@@ -26,6 +26,8 @@ class movieController {
                 title,
                 description,
                 duration,
+                category,
+                price,
                 poster_url,
                 created_at
             );
@@ -78,13 +80,13 @@ class movieController {
 
     static async updateMovie(req, res) {
         try {
-            const { id, title, description, duration, poster_url } = req.body;
+            const { id, title, description, duration, category, price, poster_url } = req.body;
 
             if (!id) {
                 return res.status(400).json({ message: "ID tidak boleh kosong" });
             }
 
-            const movieData = new Movies(id, title, description, duration, poster_url);
+            const movieData = new Movies(id, title, description, duration, category, price, poster_url);
 
             const result = await Movies.updateMovies(movieData);
 
@@ -99,6 +101,8 @@ class movieController {
                     title,
                     description,
                     duration,
+                    category,
+                    price,
                     poster_url
                 }
             });

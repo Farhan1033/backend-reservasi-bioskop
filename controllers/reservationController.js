@@ -14,7 +14,6 @@ class reservationController {
                 });
             }
 
-            // Cek ketersediaan kursi
             const isAvailable = await Reservation.checkAvailability(schedule_id, seat_id);
             if (!isAvailable) {
                 return res.status(400).json({
@@ -22,7 +21,6 @@ class reservationController {
                 });
             }
 
-            // Cek apakah kursi ada di studio yang sesuai dengan jadwal
             const schedule = await Schedule.getById(schedule_id);
             const seat = await Seat.getById(seat_id);
 

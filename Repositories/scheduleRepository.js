@@ -4,7 +4,8 @@ export default class scheduleRepository {
     static getAllSchedules() {
         return new Promise((resolve, reject) => {
             const sql = `
-                SELECT s.*, m.title as movie_title, m.poster_url as movie_poster, st.name as studio_name 
+                SELECT s.*, m.title as movie_title, m.poster_url as movie_poster, st.name as studio_name,
+                m.category as category 
                 FROM schedules s
                 JOIN movies m ON s.movie_id = m.id
                 JOIN studios st ON s.studio_id = st.id
@@ -35,9 +36,11 @@ export default class scheduleRepository {
     static getSchedulesByMovie(movieId) {
         return new Promise((resolve, reject) => {
             const sql = `
-                SELECT s.*, st.name as studio_name, st.seat_capacity
+                SELECT s.*, st.name as studio_name, m.title as movie_title,
+                m.poster_url as movie_poster, m.category as category, m.description as description, m.price as price
                 FROM schedules s
                 JOIN studios st ON s.studio_id = st.id
+                JOIN movies m ON s.movie_id = m.id
                 WHERE s.movie_id = ?
                 ORDER BY s.show_time
             `;

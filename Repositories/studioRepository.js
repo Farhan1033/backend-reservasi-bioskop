@@ -11,6 +11,16 @@ export default class studioRepository {
         })
     }
 
+    static findByPK(id) {
+        return new Promise((resolve, reject) => {
+            const sql = "SELECT * FROM studios WHERE id = ?"
+            db.query(sql, [id], (err, result) => {
+                if (err) return reject(err)
+                resolve(result)
+            })
+        })
+    }
+
     static addStudio(id, name, seat_capacity) {
         return new Promise((resolve, reject) => {
             const sql = "INSERT INTO studios (id, name, seat_capacity) VALUES (?, ?, ?)"

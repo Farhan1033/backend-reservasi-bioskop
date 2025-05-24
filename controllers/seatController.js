@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import Seat from '../models/Seats.js';
+import Studios from '../models/Studios.js';
 
 class seatController {
     static async createSeat(req, res) {
@@ -14,7 +15,7 @@ class seatController {
 
             // Cek apakah seat_number sudah ada di studio tersebut
             const existingSeats = await Seat.getByStudio(studio_id);
-            const seatExists = existingSeats.some(seat => 
+            const seatExists = existingSeats.some(seat =>
                 seat.seat_number === seat_number && seat.row === (row || 'A')
             );
 
@@ -52,29 +53,87 @@ class seatController {
                 });
             }
 
+            const studioResult = await Studios.findByPK(studio_id);
+            if (!studioResult || studioResult.length === 0) {
+                return res.status(404).json({ message: "Studio tidak ditemukan" });
+            }
+
+            const studio = studioResult[0];
+
+            const existingSeatCount = await Seat.countByStudio(studio_id);
+
+            if (existingSeatCount + seats.length > studio.seat_capacity) {
+                const sisa = studio.seat_capacity - existingSeatCount;
+                return res.status(400).json({
+                    message: `Kapasitas studio sudah penuh. Maksimum hanya bisa menambahkan ${sisa < 0 ? 0 : sisa} kursi lagi.`,
+                    current_seats: existingSeatCount,
+                    capacity: studio.seat_capacity,
+                    requested: seats.length,
+                    available_slots: sisa < 0 ? 0 : sisa
+                });
+            }
+
+            const seatNumbers = seats.map(seat => seat.seat_number);
+            const uniqueSeatNumbers = [...new Set(seatNumbers)];
+
+            if (seatNumbers.length !== uniqueSeatNumbers.length) {
+                return res.status(400).json({
+                    message: "Terdapat duplikasi nomor kursi dalam data yang dikirim"
+                });
+            }
+
+            const existingSeats = await seatRepository.getSeatsByStudio(studio_id);
+            const existingSeatNumbers = existingSeats.map(seat => seat.seat_number);
+            const duplicates = seatNumbers.filter(num => existingSeatNumbers.includes(num));
+
+            if (duplicates.length > 0) {
+                return res.status(400).json({
+                    message: `Nomor kursi sudah ada di studio ini: ${duplicates.join(', ')}`
+                });
+            }
+
             const seatsData = seats.map(seat => ({
                 id: uuidv4(),
                 studio_id,
                 seat_number: seat.seat_number,
                 row: seat.row || 'A',
                 type: seat.type || 'regular',
-                is_active: seat.is_active || true
+                is_active: seat.is_active !== false
             }));
 
-            await Seat.bulkCreate(seatsData);
+            await seatRepository.bulkCreateSeats(seatsData);
 
             res.status(201).json({
-                message: "Kursi berhasil ditambahkan secara massal",
-                count: seatsData.length
+                message: "Kursi berhasil ditambahkan secara masal",
+                count: seatsData.length,
+                studio_capacity: studio.seat_capacity,
+                total_seats_after: existingSeatCount + seatsData.length,
+                remaining_capacity: studio.seat_capacity - (existingSeatCount + seatsData.length)
             });
+
         } catch (error) {
-            console.error("Error in createBulkSeats:", error);
+            if (error.code === 'ER_DUP_ENTRY') {
+                return res.status(400).json({
+                    message: "Terdapat duplikasi data kursi",
+                    details: "Nomor kursi atau ID kursi sudah ada di database"
+                });
+            }
+
+            if (error.code === 'ER_NO_REFERENCED_ROW_2') {
+                return res.status(400).json({
+                    message: "Studio ID tidak valid",
+                    details: "Studio yang direferensikan tidak ditemukan"
+                });
+            }
+
             res.status(500).json({
                 error: error.message,
                 details: "Terjadi kesalahan saat menambahkan kursi secara massal"
             });
         }
     }
+
+
 
     static async getSeatsByStudio(req, res) {
         try {
@@ -87,9 +146,9 @@ class seatController {
                 seats: seats
             });
         } catch (error) {
-            res.status(500).json({ 
-                message: "Gagal mendapatkan data kursi", 
-                error: error.message 
+            res.status(500).json({
+                message: "Gagal mendapatkan data kursi",
+                error: error.message
             });
         }
     }
@@ -105,9 +164,9 @@ class seatController {
                 available_seats: seats
             });
         } catch (error) {
-            res.status(500).json({ 
-                message: "Gagal mendapatkan kursi yang tersedia", 
-                error: error.message 
+            res.status(500).json({
+                message: "Gagal mendapatkan kursi yang tersedia",
+                error: error.message
             });
         }
     }
@@ -130,8 +189,8 @@ class seatController {
             const result = await Seat.update(id, seatData);
 
             if (result.affectedRows === 0) {
-                return res.status(404).json({ 
-                    message: "Kursi tidak ditemukan atau tidak ada perubahan" 
+                return res.status(404).json({
+                    message: "Kursi tidak ditemukan atau tidak ada perubahan"
                 });
             }
 
@@ -161,8 +220,8 @@ class seatController {
                 return res.status(404).json({ message: "Kursi tidak ditemukan" });
             }
 
-            res.status(200).json({ 
-                message: "Kursi berhasil dinonaktifkan" 
+            res.status(200).json({
+                message: "Kursi berhasil dinonaktifkan"
             });
         } catch (error) {
             res.status(500).json({ error: error.message });
@@ -179,8 +238,8 @@ class seatController {
 
             await Seat.delete(id);
 
-            res.status(200).json({ 
-                message: "Kursi berhasil dihapus" 
+            res.status(200).json({
+                message: "Kursi berhasil dihapus"
             });
         } catch (error) {
             res.status(500).json({ error: error.message });

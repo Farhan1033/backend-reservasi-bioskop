@@ -21,20 +21,20 @@ export default class movieRepository {
         })
     }
 
-    static createMovies(id, title, description, duration, poster_url) {
+    static createMovies(id, title, description, duration, category, price, poster_url) {
         return new Promise((resolve, reject) => {
-            const sql = "INSERT INTO movies (id, title, description, duration, poster_url) VALUES (?, ?, ?, ?, ?)"
-            db.query(sql, [id, title, description, duration, poster_url], (err, result) => {
+            const sql = "INSERT INTO movies (id, title, description, duration, category, price, poster_url) VALUES (?, ?, ?, ?, ?, ?, ?)"
+            db.query(sql, [id, title, description, duration, category, price, poster_url], (err, result) => {
                 if (err) return reject(err)
                 resolve(result)
             })
         })
     }
 
-    static updateMovies(id, title, description, duration, poster_url) {
+    static updateMovies(id, title, description, duration, category, price, poster_url) {
         return new Promise((resolve, reject) => {
-            const sql = "UPDATE movies SET title = ?, description = ?, duration = ?, poster_url = ? WHERE id = ?"
-            db.query(sql, [title, description, duration, poster_url, id], (err, result) => {
+            const sql = "UPDATE movies SET title = ?, description = ?, duration = ?, category = ?, price = ?, poster_url = ? WHERE id = ?"
+            db.query(sql, [title, description, duration, category, price, poster_url, id], (err, result) => {
                 if (err) return reject(err)
                 resolve(result)
             })

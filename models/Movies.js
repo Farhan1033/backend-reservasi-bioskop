@@ -1,11 +1,13 @@
 import movieRepository from "../Repositories/movieRepository.js";
 
 class Movies {
-    constructor(id, title, description, duration, poster_url, created_at) {
+    constructor(id, title, description, duration, category, price, poster_url, created_at) {
         this.id = id,
             this.title = title,
             this.description = description,
             this.duration = duration,
+            this.category = category,
+            this.price = price,
             this.poster_url = poster_url,
             this.created_at = created_at
     }
@@ -28,6 +30,8 @@ class Movies {
             filmData.title,
             filmData.description,
             filmData.duration,
+            filmData.category,
+            filmData.price,
             filmData.poster_url,
             filmData.created_at
         )
@@ -39,6 +43,8 @@ class Movies {
             filmData.title,
             filmData.description,
             filmData.duration,
+            filmData.category,
+            filmData.price,
             filmData.poster_url
         )
     }
