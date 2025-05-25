@@ -52,7 +52,7 @@ class userController {
             }
 
             const payload = {
-                userId: user.Id,
+                userId: user.id,
                 email: user.email,
                 role: user.role
             }
@@ -61,6 +61,7 @@ class userController {
 
             res.status(200).json({
                 message: 'Login berhasil',
+                id: user.id,
                 token
             })
         } catch (error) {

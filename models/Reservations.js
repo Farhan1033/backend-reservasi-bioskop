@@ -1,12 +1,13 @@
 import reservationRepository from "../Repositories/reservationRepository.js";
 
 class Reservation {
-    constructor(id, user_id, schedule_id, seat_id, reserved_at, status = 'reserved') {
+    constructor(id, user_id, schedule_id, seat_id, reserved_at, total_price, status = 'reserved') {
         this.id = id;
         this.user_id = user_id;
         this.schedule_id = schedule_id;
         this.seat_id = seat_id;
         this.reserved_at = reserved_at;
+        this.total_price = total_price;
         this.status = status;
     }
 
@@ -41,6 +42,18 @@ class Reservation {
 
     static delete(id) {
         return reservationRepository.deleteReservation(id);
+    }
+
+    static createBulk(reservationsData) {
+        return reservationRepository.createBulkReservations(reservationsData);
+    }
+    
+    static checkMultipleAvailability(scheduleId, seatIds) {
+        return reservationRepository.checkMultipleSeatsAvailability(scheduleId, seatIds);
+    }
+    
+    static validateSeatsStudio(seatIds, studioId) {
+        return reservationRepository.validateSeatsStudio(seatIds, studioId);
     }
 }
 

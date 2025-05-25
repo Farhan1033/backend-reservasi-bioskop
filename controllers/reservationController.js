@@ -4,9 +4,98 @@ import Schedule from '../models/Schedules.js';
 import Seat from '../models/Seats.js';
 
 class reservationController {
+    static async createBulkReservation(req, res) {
+        try {
+            const { user_id, schedule_id, seat_ids, total_price } = req.body;
+
+            if (!user_id || !schedule_id || !seat_ids || !Array.isArray(seat_ids) || seat_ids.length === 0 || !total_price) {
+                return res.status(400).json({
+                    message: "Field user_id, schedule_id, dan seat_ids (array) harus diisi"
+                });
+            }
+
+            if (seat_ids.length > 10) {
+                return res.status(400).json({
+                    message: "Maksimal 10 kursi dapat dipesan sekaligus"
+                });
+            }
+
+            const schedule = await Schedule.getById(schedule_id);
+            if (!schedule) {
+                return res.status(404).json({
+                    message: "Jadwal tidak ditemukan"
+                });
+            }
+
+            const validSeats = await Reservation.validateSeatsStudio(seat_ids, schedule.studio_id);
+            if (validSeats.length !== seat_ids.length) {
+                const invalidSeats = seat_ids.filter(seatId =>
+                    !validSeats.some(seat => seat.id === seatId)
+                );
+                return res.status(400).json({
+                    message: "Beberapa kursi tidak valid atau tidak tersedia di studio ini",
+                    invalid_seats: invalidSeats
+                });
+            }
+
+            const availability = await Reservation.checkMultipleAvailability(schedule_id, seat_ids);
+            const unavailableSeats = availability.filter(seat => !seat.is_available);
+
+            if (unavailableSeats.length > 0) {
+                return res.status(400).json({
+                    message: "Beberapa kursi sudah dipesan",
+                    unavailable_seats: unavailableSeats.map(seat => seat.seat_id)
+                });
+            }
+
+            const reservationsData = seat_ids.map(seat_id => ({
+                id: uuidv4(),
+                user_id,
+                schedule_id,
+                seat_id,
+                total_price,
+                status: 'reserved'
+            }));
+
+            await Reservation.createBulk(reservationsData);
+
+            const seatsDetail = validSeats.map(seat => ({
+                seat_id: seat.id,
+                seat_number: seat.seat_number
+            }));
+
+            res.status(201).json({
+                message: `Berhasil membuat ${seat_ids.length} reservasi`,
+                reservations: reservationsData.map(reservation => ({
+                    id: reservation.id,
+                    user_id: reservation.user_id,
+                    schedule_id: reservation.schedule_id,
+                    seat_id: reservation.seat_id,
+                    reserved_at: new Date(),
+                    total_price: reservation.total_price,
+                    status: reservation.status
+                })),
+                seats_detail: seatsDetail,
+                total_seats: seat_ids.length
+            });
+
+        } catch (error) {
+            console.error("Error in createBulkReservation:", error);
+            res.status(500).json({
+                error: error.message,
+                details: "Terjadi kesalahan saat membuat bulk reservasi"
+            });
+        }
+    }
+
     static async createReservation(req, res) {
         try {
-            const { user_id, schedule_id, seat_id } = req.body;
+            const { user_id, schedule_id, seat_id, seat_ids } = req.body;
+
+            if (seat_ids && Array.isArray(seat_ids) && seat_ids.length > 0) {
+                req.body = { user_id, schedule_id, seat_ids };
+                return this.createBulkReservation(req, res);
+            }
 
             if (!user_id || !schedule_id || !seat_id) {
                 return res.status(400).json({
