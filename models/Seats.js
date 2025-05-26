@@ -41,7 +41,7 @@ class Seat {
     }
 
     static deactivate(id) {
-        return seatRepository.deactivateSeat(id);
+        return seatRepository.deactivateSeats(id);
     }
 
     static delete(id) {

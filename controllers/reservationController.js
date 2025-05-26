@@ -59,6 +59,8 @@ class reservationController {
 
             await Reservation.createBulk(reservationsData);
 
+            await Seat.deactivate(seat_ids);
+
             const seatsDetail = validSeats.map(seat => ({
                 seat_id: seat.id,
                 seat_number: seat.seat_number

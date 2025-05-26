@@ -107,15 +107,17 @@ export default class seatRepository {
         });
     }
 
-    static deactivateSeat(id) {
+    static deactivateSeats(seatIds) {
         return new Promise((resolve, reject) => {
-            const sql = "UPDATE seats SET is_active = false WHERE id = ?";
-            db.query(sql, [id], (err, result) => {
+            const placeholders = seatIds.map(() => '?').join(',');
+            const sql = `UPDATE seats SET is_active = false WHERE id IN (${placeholders})`;
+            db.query(sql, seatIds, (err, result) => {
                 if (err) return reject(err);
                 resolve(result);
             });
         });
     }
+
 
     static deleteSeat(id) {
         return new Promise((resolve, reject) => {
