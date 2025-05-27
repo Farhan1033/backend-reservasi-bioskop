@@ -118,6 +118,15 @@ export default class seatRepository {
         });
     }
 
+    static actavateSeats() {
+        return new Promise((resolve, reject) => {
+            const sql = 'UPDATE seats SET is_active = true'
+            db.query(sql, (err, result) => {
+                if (err) return reject(err);
+                resolve(result);
+            })
+        })
+    }
 
     static deleteSeat(id) {
         return new Promise((resolve, reject) => {

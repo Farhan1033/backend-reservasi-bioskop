@@ -228,6 +228,20 @@ class seatController {
         }
     }
 
+    static async activateSeats(req, res) {
+        try {
+            await Seat.activateSeats();
+
+            res.status(201).json({
+                message: 'Berhasil mengaktifkan semua kursi'
+            })
+        } catch (error) {
+            res.status(500).json({
+                message: 'Gagal mengaktifasi semua kursi'
+            })
+        }
+    }
+
     static async deleteSeat(req, res) {
         try {
             const { id } = req.params;

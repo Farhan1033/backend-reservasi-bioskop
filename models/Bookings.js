@@ -1,4 +1,4 @@
-import bookingRepository from "../Repositories/bookingRepository"
+import bookingRepository from "../Repositories/bookingRepository.js"
 
 export default class Bookings {
     constructor(id, user_id, schedule_id, total_price) {
@@ -15,5 +15,13 @@ export default class Bookings {
             bookingData.schedule_id,
             bookingData.total_price
         )
+    }
+
+    static findById(id) {
+        return bookingRepository.findById(id);
+    }
+
+    static getAllData() {
+        return bookingRepository.getAllBooking();
     }
 }

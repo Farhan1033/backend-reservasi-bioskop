@@ -16,8 +16,8 @@ class Reservation {
         return reservationRepository.getReservationById(id);
     }
 
-    static getByUser(userId) {
-        return reservationRepository.getReservationsByUser(userId);
+    static getByBooking(userId) {
+        return reservationRepository.getReservationsByBooking(userId);
     }
 
     static updateStatus(id, status) {

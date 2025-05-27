@@ -6,6 +6,7 @@ export default class reservationRepository {
             const sql = `
                 SELECT r.*, 
                     m.title as movie_title,
+                    m.poster_url as movie_poster,
                     s.show_time,
                     std.name as studio_name,
                     st.seat_number,
@@ -48,7 +49,7 @@ export default class reservationRepository {
         });
     }
 
-    static getReservationsByUser(userId) {
+    static getReservationsByBooking(userId) {
         return new Promise((resolve, reject) => {
             const sql = `
                 SELECT 
@@ -66,7 +67,7 @@ export default class reservationRepository {
                 JOIN movies m ON s.movie_id = m.id
                 JOIN seats st ON r.seat_id = st.id
                 JOIN studios std ON st.studio_id = std.id
-                WHERE r.user_id = ?
+                WHERE r.booking_id = ?
                 ORDER BY s.show_time DESC;
             `;
             db.query(sql, [userId], (err, result) => {
@@ -194,7 +195,7 @@ export default class reservationRepository {
 
             const placeholders = seatIds.map(() => '?').join(', ');
             const sql = `
-                SELECT id, studio_id, seat_number
+                SELECT id, studio_id, seat_number, row as seat_row
                 FROM seats 
                 WHERE id IN (${placeholders}) AND studio_id = ?
             `;

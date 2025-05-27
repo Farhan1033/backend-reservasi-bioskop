@@ -10,4 +10,26 @@ export default class bookingRepository {
             })
         })
     }
+
+    static findById(id) {
+        return new Promise((resolve, reject) => {
+            const sql = 'SELECT * FROM bookings WHERE id = ?';
+            db.query(sql, [id], (err, results) => {
+                if (err) return reject(err);
+                if (results.length === 0) return resolve(null); // <--- penting!
+                resolve(results[0]);
+            });
+        });
+    }
+
+    static getAllBooking() {
+        return new Promise((resolve, reject) => {
+            const sql = 'SELECT * FROM bookings'
+            db.query(sql, (err, result) => {
+                if (err) return reject(err);
+                resolve(result);
+            })
+        })
+    }
+
 }
