@@ -1,13 +1,10 @@
 import reservationRepository from "../Repositories/reservationRepository.js";
 
 class Reservation {
-    constructor(id, user_id, schedule_id, seat_id, reserved_at, total_price, status = 'reserved') {
+    constructor(id, bookingId, seatId, status = 'reserved') {
         this.id = id;
-        this.user_id = user_id;
-        this.schedule_id = schedule_id;
-        this.seat_id = seat_id;
-        this.reserved_at = reserved_at;
-        this.total_price = total_price;
+        this.booking_id = bookingId;
+        this.seat_id = seatId;
         this.status = status;
     }
 
@@ -23,15 +20,6 @@ class Reservation {
         return reservationRepository.getReservationsByUser(userId);
     }
 
-    static create(reservationData) {
-        return reservationRepository.createReservation(
-            reservationData.id,
-            reservationData.user_id,
-            reservationData.schedule_id,
-            reservationData.seat_id
-        );
-    }
-
     static updateStatus(id, status) {
         return reservationRepository.updateReservationStatus(id, status);
     }
@@ -44,14 +32,22 @@ class Reservation {
         return reservationRepository.deleteReservation(id);
     }
 
+    static create(reservation) {
+        return reservationRepository.createReservation(
+            reservation.id,
+            reservation.booking_id,
+            reservation.seat_id
+        );
+    }
+
     static createBulk(reservationsData) {
         return reservationRepository.createBulkReservations(reservationsData);
     }
-    
+
     static checkMultipleAvailability(scheduleId, seatIds) {
         return reservationRepository.checkMultipleSeatsAvailability(scheduleId, seatIds);
     }
-    
+
     static validateSeatsStudio(seatIds, studioId) {
         return reservationRepository.validateSeatsStudio(seatIds, studioId);
     }

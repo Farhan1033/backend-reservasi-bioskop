@@ -7,6 +7,7 @@ import studioRoute from './routers/studioRoute.js'
 import seatRoute from './routers/seatRoute.js'
 import scheduleRoute from './routers/shceduleRoute.js'
 import reservationRoute from './routers/reservationRoute.js'
+import bookingRoute from './routers/bookingRoute.js'
 
 
 const app = express();
@@ -21,6 +22,7 @@ app.use('/api/movies', movieRoute)
 app.use('/api/studios', studioRoute)
 app.use('/api/seats', seatRoute)
 app.use('/api/schedule', scheduleRoute)
+app.use('/api/booking', bookingRoute)
 app.use('/api/reservation', reservationRoute)
 
 app.listen(process.env.APP_PORT)
