@@ -230,9 +230,16 @@ class seatController {
 
     static async activateSeats(req, res) {
         try {
-            await Seat.activateSeats();
 
-            res.status(201).json({
+            const { studio_id } = req.params;
+
+            if (!studio_id) {
+                return res.status(400).json({ error: "ID Studio harus diisi" })
+            }
+
+            await Seat.activateSeats(studio_id);
+
+            res.status(200).json({
                 message: 'Berhasil mengaktifkan semua kursi'
             })
         } catch (error) {

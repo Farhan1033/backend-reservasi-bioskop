@@ -118,10 +118,10 @@ export default class seatRepository {
         });
     }
 
-    static actavateSeats() {
+    static actavateSeats(studioId) {
         return new Promise((resolve, reject) => {
-            const sql = 'UPDATE seats SET is_active = true'
-            db.query(sql, (err, result) => {
+            const sql = 'UPDATE seats SET is_active = true WHERE studio_id = ?'
+            db.query(sql, [studioId], (err, result) => {
                 if (err) return reject(err);
                 resolve(result);
             })

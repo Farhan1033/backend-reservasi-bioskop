@@ -10,7 +10,7 @@ router.post('/bulk', seatController.createBulkSeats);
 router.put('/update-seat', seatController.updateSeat);
 router.delete('/delete-seat/:id', seatController.deleteSeat);
 router.patch('/deactivate/:id', seatController.deactivateSeat);
-router.patch('/activate', seatController.activateSeats);
+router.patch('/activate/:studio_id', seatController.activateSeats);
 
 // Public routes
 router.get('/studio/:studioId', userMiddleware, seatController.getSeatsByStudio);

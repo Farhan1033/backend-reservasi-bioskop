@@ -44,8 +44,8 @@ class Seat {
         return seatRepository.deactivateSeats(id);
     }
 
-    static activateSeats() {
-        return seatRepository.actavateSeats();
+    static activateSeats(studio_id) {
+        return seatRepository.actavateSeats(studio_id);
     }
 
     static delete(id) {
