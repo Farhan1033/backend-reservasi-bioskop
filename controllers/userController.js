@@ -62,6 +62,7 @@ class userController {
             res.status(200).json({
                 message: 'Login berhasil',
                 id: user.id,
+                role: user.role,
                 token
             })
         } catch (error) {
