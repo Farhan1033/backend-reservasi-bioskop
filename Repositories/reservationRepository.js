@@ -60,7 +60,8 @@ export default class reservationRepository {
                     s.show_time,
                     std.name AS studio_name,
                     st.seat_number,
-                    st.row as seat_row
+                    st.row as seat_row,
+                    b.total_price
                 FROM reservations r
                 JOIN bookings b ON r.booking_id = b.id
                 JOIN schedules s ON b.schedule_id = s.id
