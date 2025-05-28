@@ -8,7 +8,7 @@ const router = express.Router();
 router.post('/bulk', userMiddleware, reservationController.createBulkReservation);
 router.put('/status', userMiddleware, reservationController.updateReservationStatus);
 router.patch('/:id/cancel', userMiddleware, reservationController.cancelReservation);
-router.get('/booking/:bookingId', reservationController.getBookingReservations);
+router.get('/booking/:bookingId', userMiddleware, reservationController.getBookingReservations);
 
 // Admin routes
 router.get('/', reservationController.getAllReservations);

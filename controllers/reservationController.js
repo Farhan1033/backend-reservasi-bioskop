@@ -141,7 +141,7 @@ class reservationController {
 
             res.status(200).json({
                 message: "Berhasil mendapatkan reservasi pengguna",
-                reservations
+                reservationData: reservations
             });
         } catch (error) {
             res.status(500).json({
