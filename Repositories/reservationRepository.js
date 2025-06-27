@@ -207,4 +207,38 @@ export default class reservationRepository {
             });
         });
     }
+
+    static getBookedSeatsBySchedule(scheduleId) {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                SELECT r.seat_id
+                FROM reservations r
+                JOIN bookings b ON r.booking_id = b.id
+                WHERE b.schedule_id = ?
+                  AND r.status IN ('reserved', 'paid')
+            `;
+            db.query(sql, [scheduleId], (err, result) => {
+                if (err) return reject(err);
+                const seatIds = result.map(row => row.seat_id); // return array of seat_id
+                resolve(seatIds);
+            });
+        });
+    }
+
+    static resetReservationsBySchedule(scheduleId) {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                UPDATE reservations r
+                JOIN bookings b ON r.booking_id = b.id
+                SET r.status = 'expired'
+                WHERE b.schedule_id = ?
+            `;
+
+            db.query(sql, [scheduleId], (err, result) => {
+                if (err) return reject(err);
+                resolve({ message: "Semua kursi pada jadwal ini telah direset", result });
+            });
+        });
+    }
+
 }

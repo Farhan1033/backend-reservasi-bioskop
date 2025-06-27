@@ -70,4 +70,20 @@ export default class bookingController {
             })
         }
     }
+
+    static async getAllDataAdmin(req, res) {
+        try {
+            const bookingData = await Bookings.getAllDataAdmin();
+
+            res.status(200).json({
+                message: 'Berhasil mendapatkan semua data',
+                booking: bookingData
+            })
+        } catch (error) {
+            res.status(500).json({
+                error: error.message,
+                message: 'Terjadi kesalahan saat mengambil data'
+            })
+        }
+    }
 }

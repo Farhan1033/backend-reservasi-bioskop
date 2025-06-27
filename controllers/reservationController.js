@@ -3,6 +3,7 @@ import Reservation from '../models/Reservations.js';
 import Schedule from '../models/Schedules.js';
 import Seat from '../models/Seats.js';
 import Bookings from '../models/Bookings.js';
+import reservationRepository from '../Repositories/reservationRepository.js';
 
 class reservationController {
     static async createBulkReservation(req, res) {
@@ -66,8 +67,6 @@ class reservationController {
             }));
 
             await Reservation.createBulk(reservationsData);
-
-            await Seat.deactivate(seat_ids);
 
             const seatsDetail = validSeats.map(seat => ({
                 seat_id: seat.id,
@@ -218,6 +217,37 @@ class reservationController {
             res.status(500).json({ error: error.message });
         }
     }
+
+    static async getBookedSeatsBySchedule(req, res) {
+        const scheduleId = req.params.id;
+
+        try {
+            const bookedSeats = await reservationRepository.getBookedSeatsBySchedule(scheduleId);
+            res.status(200).json(bookedSeats);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Gagal mengambil kursi yang telah dipesan' });
+        }
+    };
+
+    static async resetReservationsBySchedule(req, res) {
+        const { schedule_id } = req.params;
+
+        try {
+            const result = await Reservation.resetReservationsBySchedule(schedule_id);
+
+            return res.status(200).json({
+                message: 'Kursi pada jadwal ini berhasil direset.',
+                result
+            });
+        } catch (error) {
+            console.error('Gagal mereset kursi:', error);
+            return res.status(500).json({
+                message: 'Gagal mereset kursi.',
+                error: error.message
+            });
+        }
+    };
 }
 
 export default reservationController;

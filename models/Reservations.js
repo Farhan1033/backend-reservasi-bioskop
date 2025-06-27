@@ -51,6 +51,10 @@ class Reservation {
     static validateSeatsStudio(seatIds, studioId) {
         return reservationRepository.validateSeatsStudio(seatIds, studioId);
     }
+
+    static resetReservationsBySchedule(scheduleId){
+        return reservationRepository.resetReservationsBySchedule(scheduleId);
+    }
 }
 
 export default Reservation;

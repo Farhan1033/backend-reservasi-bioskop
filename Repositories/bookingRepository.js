@@ -24,7 +24,33 @@ export default class bookingRepository {
 
     static getAllBooking() {
         return new Promise((resolve, reject) => {
-            const sql = 'SELECT * FROM bookings'
+            const sql = `
+                 SELECT 
+                b.*, 
+                s.show_time,
+                m.title AS movie_title
+                FROM bookings b
+                JOIN schedules s ON b.schedule_id = s.id
+                JOIN movies m ON s.movie_id = m.id
+            `
+            db.query(sql, (err, result) => {
+                if (err) return reject(err);
+                resolve(result);
+            })
+        })
+    }
+
+    static getAllBookingAdmin() {
+        return new Promise((resolve, reject) => {
+            const sql = `
+                SELECT 
+                b.*, 
+                s.show_time,
+                m.title AS movie_title
+                FROM bookings b
+                JOIN schedules s ON b.schedule_id = s.id
+                JOIN movies m ON s.movie_id = m.id
+            `
             db.query(sql, (err, result) => {
                 if (err) return reject(err);
                 resolve(result);

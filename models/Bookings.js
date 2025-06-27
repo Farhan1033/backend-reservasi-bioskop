@@ -24,4 +24,8 @@ export default class Bookings {
     static getAllData() {
         return bookingRepository.getAllBooking();
     }
+
+    static getAllDataAdmin() {
+        return bookingRepository.getAllBookingAdmin();
+    }
 }
