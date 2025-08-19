@@ -25,4 +25,12 @@ app.use('/api/schedule', scheduleRoute)
 app.use('/api/bookings', bookingRoute)
 app.use('/api/reservation', reservationRoute)
 
-app.listen(process.env.APP_PORT)
+app.get("/kaithheathcheck", (req, res) => {
+    res.status(200).send("OK");
+  });
+  
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
+});
