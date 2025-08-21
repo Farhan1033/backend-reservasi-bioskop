@@ -196,7 +196,7 @@ export default class reservationRepository {
 
             const placeholders = seatIds.map(() => '?').join(', ');
             const sql = `
-                SELECT id, studio_id, seat_number, `row` as seat_row
+                SELECT id, studio_id, seat_number, row as seat_row
                 FROM seats 
                 WHERE id IN (${placeholders}) AND studio_id = ?
             `;
