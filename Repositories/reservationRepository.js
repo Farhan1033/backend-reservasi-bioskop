@@ -10,7 +10,7 @@ export default class reservationRepository {
                     s.show_time,
                     std.name as studio_name,
                     st.seat_number,
-                    st.row as seat_row
+                    st.\`row\` as seat_row
                 FROM reservations r
                 JOIN bookings b ON r.booking_id = b.id
                 JOIN schedules s ON b.schedule_id = s.id
@@ -33,7 +33,7 @@ export default class reservationRepository {
                        s.show_time,
                        std.name as studio_name,
                        st.seat_number,
-                       st.row as seat_row
+                       st.\`row\` as seat_row
                 FROM reservations r
                 JOIN bookings b ON r.booking_id = b.id
                 JOIN schedules s ON b.schedule_id = s.id
@@ -60,7 +60,7 @@ export default class reservationRepository {
                     s.show_time,
                     std.name AS studio_name,
                     st.seat_number,
-                    st.row as seat_row,
+                    st.\`row\` as seat_row,
                     b.total_price
                 FROM reservations r
                 JOIN bookings b ON r.booking_id = b.id
@@ -82,7 +82,7 @@ export default class reservationRepository {
         return new Promise((resolve, reject) => {
             const sql = `
                 INSERT INTO reservations (id, booking_id, seat_id, reserved_at, status)
-                VALUES (?, ?, ?, ?, NOW(), 'reserved')
+                VALUES (?, ?, ?, NOW(), 'reserved')
             `;
             db.query(sql, [id, booking_id, seatId], (err, result) => {
                 if (err) return reject(err);
@@ -196,7 +196,7 @@ export default class reservationRepository {
 
             const placeholders = seatIds.map(() => '?').join(', ');
             const sql = `
-                SELECT id, studio_id, seat_number, `row` as seat_row
+                SELECT id, studio_id, seat_number, \`row\` as seat_row
                 FROM seats 
                 WHERE id IN (${placeholders}) AND studio_id = ?
             `;
@@ -219,7 +219,7 @@ export default class reservationRepository {
             `;
             db.query(sql, [scheduleId], (err, result) => {
                 if (err) return reject(err);
-                const seatIds = result.map(row => row.seat_id); // return array of seat_id
+                const seatIds = result.map(row => row.seat_id);
                 resolve(seatIds);
             });
         });
@@ -240,5 +240,4 @@ export default class reservationRepository {
             });
         });
     }
-
 }
