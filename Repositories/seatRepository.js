@@ -13,7 +13,7 @@ export default class seatRepository {
 
     static getSeatsByStudio(studioId) {
         return new Promise((resolve, reject) => {
-            const sql = "SELECT * FROM seats WHERE studio_id = ? ORDER BY row, seat_number";
+            const sql = "SELECT * FROM seats WHERE studio_id = ? ORDER BY `row`, seat_number";
             db.query(sql, [studioId], (err, result) => {
                 if (err) return reject(err);
                 resolve(result);
@@ -43,7 +43,7 @@ export default class seatRepository {
                     WHERE schedule_id = ? 
                     AND status IN ('reserved', 'paid')
                 )
-                ORDER BY s.row, s.seat_number
+                ORDER BY s.`row`, s.seat_number
             `;
             db.query(sql, [scheduleId, scheduleId], (err, result) => {
                 if (err) return reject(err);
@@ -55,7 +55,7 @@ export default class seatRepository {
     static createSeat(id, studioId, seatNumber, row = 'A', type = 'regular') {
         return new Promise((resolve, reject) => {
             const sql = `
-                INSERT INTO seats (id, studio_id, seat_number, row, type, is_active)
+                INSERT INTO seats (id, studio_id, seat_number, `row`, type, is_active)
                 VALUES (?, ?, ?, ?, ?, true)
             `;
             db.query(sql, [id, studioId, seatNumber, row, type], (err, result) => {
@@ -76,7 +76,7 @@ export default class seatRepository {
             );
 
             const sql = `
-                INSERT INTO seats (id, studio_id, seat_number, row, type, is_active)
+                INSERT INTO seats (id, studio_id, seat_number, `row`, type, is_active)
                 VALUES ?
             `;
 
@@ -91,7 +91,7 @@ export default class seatRepository {
         return new Promise((resolve, reject) => {
             const sql = `
                 UPDATE seats 
-                SET seat_number = ?, row = ?, type = ?, is_active = ?
+                SET seat_number = ?, `row` = ?, type = ?, is_active = ?
                 WHERE id = ?
             `;
             db.query(sql, [
