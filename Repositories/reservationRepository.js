@@ -10,7 +10,7 @@ export default class reservationRepository {
                     s.show_time,
                     std.name as studio_name,
                     st.seat_number,
-                    st.row as seat_row
+                    st.`row` as seat_row
                 FROM reservations r
                 JOIN bookings b ON r.booking_id = b.id
                 JOIN schedules s ON b.schedule_id = s.id
@@ -33,7 +33,7 @@ export default class reservationRepository {
                        s.show_time,
                        std.name as studio_name,
                        st.seat_number,
-                       st.row as seat_row
+                       st.`row` as seat_row
                 FROM reservations r
                 JOIN bookings b ON r.booking_id = b.id
                 JOIN schedules s ON b.schedule_id = s.id
@@ -60,7 +60,7 @@ export default class reservationRepository {
                     s.show_time,
                     std.name AS studio_name,
                     st.seat_number,
-                    st.row as seat_row,
+                    st.`row` as seat_row,
                     b.total_price
                 FROM reservations r
                 JOIN bookings b ON r.booking_id = b.id
@@ -196,7 +196,7 @@ export default class reservationRepository {
 
             const placeholders = seatIds.map(() => '?').join(', ');
             const sql = `
-                SELECT id, studio_id, seat_number, row as seat_row
+                SELECT id, studio_id, seat_number, `row` as seat_row
                 FROM seats 
                 WHERE id IN (${placeholders}) AND studio_id = ?
             `;
